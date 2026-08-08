@@ -1,9 +1,24 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import TaskForm from './TaskForm.jsx'
 import TaskItem from './TaskItem.jsx'
 
+const STORAGE_KEY = 'task-board.tasks'
+
+function loadTasks() {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    return stored ? JSON.parse(stored) : []
+  } catch {
+    return []
+  }
+}
+
 function TaskBoard() {
-  const [tasks, setTasks] = useState([])
+  const [tasks, setTasks] = useState(loadTasks)
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks))
+  }, [tasks])
 
   function handleAdd(text) {
     setTasks((prev) => [
